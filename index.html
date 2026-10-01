@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Federico Bocol III | Interactive Portfolio</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%92%BC%3C/text%3E%3C/svg%3E">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-color: #0d0f17;
+            --card-bg: rgba(23, 27, 40, 0.65);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --primary: #6366f1;
+            --primary-glow: rgba(99, 102, 241, 0.35);
+            --accent: #06b6d4;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: var(--font-family);
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Canvas Background for Particle / Glitter Effect */
+        #glitter-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -2;
+            pointer-events: none;
+        }
+
+        /* Ambient Glow Background Effects */
+        .ambient-glow {
+            position: fixed;
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--primary-glow) 0%, rgba(0,0,0,0) 70%);
+            top: -100px;
+            left: -100px;
+            z-index: -1;
+            filter: blur(60px);
+            pointer-events: none;
+            animation: pulseGlow 8s infinite alternate ease-in-out;
+        }
+
+        .ambient-glow-2 {
+            position: fixed;
+            width: 550px;
+            height: 550px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(6, 182, 212, 0.25) 0%, rgba(0,0,0,0) 70%);
+            bottom: -150px;
+            right: -150px;
+            z-index: -1;
+            filter: blur(70px);
+            pointer-events: none;
+            animation: pulseGlow 10s infinite alternate-reverse ease-in-out;
+        }
+
+        @keyframes pulseGlow {
+            0% { transform: scale(1) translate(0, 0); opacity: 0.8; }
+            100% { transform: scale(1.15) translate(30px, -20px); opacity: 1; }
+        }
+
+        /* Header / Navbar */
+        header {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 1000px;
+            background: rgba(13, 15, 23, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--card-border);
+            border-radius: 50px;
+            padding: 12px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .logo {
+            font-weight: 800;
+            font-size: 1.2rem;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #fff 0%, #a5f3fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 24px;
+        }
+
+        nav a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        nav a:hover {
+            color: #fff;
+            text-shadow: 0 0 12px rgba(255, 255, 255, 0.8);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 170px 0 100px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 16px;
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: 30px;
+            color: #a5b4fc;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 24px;
+            box-shadow: 0 0 15px rgba(99, 102, 241, 0.2);
+        }
+
+        .badge-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #22c55e;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #22c55e;
+            animation: blinkDot 2s infinite;
+        }
+
+        @keyframes blinkDot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.85); }
+        }
+
+        h1 {
+            font-size: 3.8rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            letter-spacing: -1.5px;
+        }
+
+        h1 span {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px var(--primary-glow);
+        }
+
+        .hero p {
+            font-size: 1.15rem;
+            color: var(--text-muted);
+            max-width: 680px;
+            margin-bottom: 32px;
+        }
+
+        .hero-contact-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 36px;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+        }
+
+        .hero-contact-info div {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .hero-contact-info i {
+            color: var(--primary);
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 16px;
+        }
+
+        .btn {
+            padding: 12px 28px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, #4f46e5 100%);
+            color: #fff;
+            box-shadow: 0 10px 25px -5px var(--primary-glow);
+            border: none;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px -5px var(--primary-glow);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-main);
+            border: 1px solid var(--card-border);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-3px);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Section Styling */
+        section {
+            padding: 80px 0;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .section-subtitle {
+            color: var(--text-muted);
+            margin-bottom: 40px;
+            font-size: 1rem;
+        }
+
+        /* Glassmorphic Cards */
+        .glass-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 32px;
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.03), transparent);
+            transform: rotate(30deg);
+            transition: all 0.6s ease;
+        }
+
+        .glass-card:hover::before {
+            animation: shimmer 1.5s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) rotate(30deg); }
+            100% { transform: translateX(100%) rotate(30deg); }
+        }
+
+        .glass-card:hover {
+            border-color: rgba(99, 102, 241, 0.4);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4), 0 0 20px rgba(99, 102, 241, 0.15);
+        }
+
+        /* Tools Grid Section */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 20px;
+        }
+
+        .tool-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 24px 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tool-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 10px 25px -5px var(--primary-glow);
+            transform: translateY(-8px) scale(1.03);
+        }
+
+        .tool-card i {
+            font-size: 2.6rem;
+            transition: transform 0.3s ease;
+        }
+
+        .tool-card:hover i {
+            transform: scale(1.15) rotate(5deg);
+        }
+
+        /* Inline SVG logos (always visible, no external files needed) */
+        /* Floating (moving) logos */
+        @keyframes floatLogo {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-7px); }
+        }
+
+        .tool-card svg {
+            width: 2.6rem;
+            height: 2.6rem;
+            transition: transform 0.3s ease;
+            animation: floatLogo 3s ease-in-out infinite;
+        }
+
+        .tool-card:nth-child(3n+2) svg { animation-delay: -1s; }
+        .tool-card:nth-child(3n) svg { animation-delay: -2s; }
+
+        .tool-card:hover svg {
+            animation: none;
+            transform: scale(1.15) rotate(5deg);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .tool-card svg { animation: none; }
+        }
+
+        .tool-card span {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        /* Experience Timeline */
+        .timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .timeline-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .job-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .company-name {
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .job-date {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            background: rgba(255, 255, 255, 0.05);
+            padding: 4px 12px;
+            border-radius: 20px;
+            border: 1px solid var(--card-border);
+        }
+
+        .timeline-body ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .timeline-body li {
+            position: relative;
+            padding: 8px 12px 8px 40px;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        /* Glowing gradient check bullet */
+        .timeline-body li::before {
+            content: "\2713";
+            position: absolute;
+            left: 8px;
+            top: 9px;
+            width: 22px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 800;
+            color: #fff;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            border-radius: 50%;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.12), 0 0 14px var(--primary-glow);
+            transition: all 0.3s ease;
+        }
+
+        .timeline-body li:hover {
+            color: #fff;
+            background: rgba(99, 102, 241, 0.08);
+            transform: translateX(6px);
+        }
+
+        .timeline-body li:hover::before {
+            transform: scale(1.15) rotate(360deg);
+            box-shadow: 0 0 0 5px rgba(6, 182, 212, 0.18), 0 0 20px rgba(6, 182, 212, 0.5);
+        }
+
+        /* Core Skills Tags */
+        .skills-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .skill-tag {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--card-border);
+            padding: 10px 18px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            cursor: default;
+        }
+
+        .skill-tag:hover {
+            background: rgba(99, 102, 241, 0.15);
+            border-color: var(--primary);
+            color: #fff;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.25);
+        }
+
+        .skill-tag i {
+            color: var(--primary);
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--card-border);
+            padding: 40px 0;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 60px;
+        }
+
+        /* Responsive Breakpoints */
+        @media (max-width: 480px) {
+            .logo { display: none; }
+            header { justify-content: center; }
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            header {
+                padding: 10px 18px;
+            }
+
+            .logo {
+                font-size: 1rem;
+            }
+
+            nav ul {
+                gap: 10px;
+            }
+
+            nav a {
+                font-size: 0.75rem;
+            }
+
+            .tools-grid {
+                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            }
+
+            .timeline-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Canvas for Floating Particle / Glitter Animation -->
+    <canvas id="glitter-canvas"></canvas>
+
+    <!-- Ambient Background Glows -->
+    <div class="ambient-glow"></div>
+    <div class="ambient-glow-2"></div>
+
+    <!-- Navigation -->
+    <header>
+        <div class="logo">FEDERICO.</div>
+        <nav>
+            <ul>
+                <li><a href="#about">About</a></li>
+                <li><a href="#tools">Tools</a></li>
+                <li><a href="#experience">Experience</a></li>
+                <li><a href="#skills">Skills</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <!-- Hero Section -->
+        <section class="hero" id="about">
+            <div class="badge">
+                <span class="badge-dot"></span> Available for Opportunities
+            </div>
+            <h1>Hi, I'm <span>Federico Bocol III</span></h1>
+            <p>Results-driven Technical Support Professional, Cold Caller, and Administrative Coordinator with 3+ years of experience in technical support, multichannel communication, and CRM management.</p>
+            
+            <div class="hero-contact-info">
+                <div><i class="fa-solid fa-envelope"></i> fedbocol29@gmail.com</div>
+                <div><i class="fa-solid fa-phone"></i> 09156283563</div>
+                <div><i class="fa-solid fa-location-dot"></i> Kabankalan City, Negros Occidental</div>
+            </div>
+
+            <div class="cta-buttons">
+                <a href="mailto:fedbocol29@gmail.com" class="btn btn-primary"><i class="fa-solid fa-paper-plane"></i> Contact Me</a>
+                <a href="#experience" class="btn btn-secondary">View Experience</a>
+            </div>
+        </section>
+
+        <!-- Tools Section -->
+        <section id="tools">
+            <h2 class="section-title">Tools & Software</h2>
+            <p class="section-subtitle">Technologies and software tools I utilize to handle data, customer relations, and technical tasks.</p>
+            
+            <div class="tools-grid">
+                <!-- Salesforce -->
+                <div class="tool-card">
+                    <svg viewBox="0 0 48 48" role="img" aria-label="Salesforce logo"><g fill="#00A1E0"><circle cx="15" cy="27" r="8"/><circle cx="24" cy="20" r="9.5"/><circle cx="34" cy="26" r="8.5"/><rect x="15" y="26" width="19" height="9"/></g></svg>
+                    <span>Salesforce</span>
+                </div>
+                <!-- Google Sheets -->
+                <div class="tool-card">
+                    <svg viewBox="0 0 48 48" role="img" aria-label="Google Sheets logo"><path d="M12 4h17l9 9v31a2 2 0 0 1-2 2H12a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z" fill="#0F9D58"/><path d="M29 4l9 9h-7a2 2 0 0 1-2-2z" fill="#fff" opacity=".45"/><rect x="15" y="22" width="18" height="14" rx="1" fill="#fff"/><rect x="22.5" y="22" width="1.6" height="14" fill="#0F9D58"/><rect x="15" y="26.7" width="18" height="1.6" fill="#0F9D58"/><rect x="15" y="31.4" width="18" height="1.6" fill="#0F9D58"/></svg>
+                    <span>Google Sheets</span>
+                </div>
+                <!-- Microsoft Excel -->
+                <div class="tool-card">
+                    <svg viewBox="0 0 48 48" role="img" aria-label="Microsoft Excel logo"><rect width="48" height="48" rx="11" fill="#1D6F42"/><path d="M15 14l18 20M33 14L15 34" stroke="#fff" stroke-width="5.5" stroke-linecap="round"/></svg>
+                    <span>MS Excel</span>
+                </div>
+                <!-- Microsoft Word -->
+                <div class="tool-card">
+                    <svg viewBox="0 0 48 48" role="img" aria-label="Microsoft Word logo"><rect width="48" height="48" rx="11" fill="#2B579A"/><polyline points="11,15 17,34 24,20 31,34 37,15" fill="none" stroke="#fff" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span>MS Word</span>
+                </div>
+                <!-- Google Docs -->
+                <div class="tool-card">
+                    <svg viewBox="0 0 48 48" role="img" aria-label="Google Docs logo"><path d="M12 4h17l9 9v31a2 2 0 0 1-2 2H12a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z" fill="#4285F4"/><path d="M29 4l9 9h-7a2 2 0 0 1-2-2z" fill="#fff" opacity=".45"/><rect x="15" y="23" width="18" height="2.2" rx="1" fill="#fff"/><rect x="15" y="28" width="18" height="2.2" rx="1" fill="#fff"/><rect x="15" y="33" width="12" height="2.2" rx="1" fill="#fff"/></svg>
+                    <span>Google Docs</span>
+                </div>
+                <!-- Gmail -->
+                <div class="tool-card">
+                    <svg viewBox="0 0 48 48" role="img" aria-label="Gmail logo"><rect x="3" y="8" width="42" height="32" rx="5" fill="#fff"/><path d="M9 35V16l15 12 15-12v19" fill="none" stroke="#EA4335" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/></svg>
+                    <span>Gmail</span>
+                </div>
+                <!-- CRM Systems -->
+                <div class="tool-card">
+                    <svg viewBox="0 0 48 48" role="img" aria-label="CRM Systems logo"><g fill="none" stroke="#6366f1" stroke-width="3.5" stroke-linecap="round"><ellipse cx="24" cy="12" rx="14" ry="5"/><path d="M10 12v24c0 2.8 6.3 5 14 5s14-2.2 14-5V12M10 24c0 2.8 6.3 5 14 5s14-2.2 14-5"/></g></svg>
+                    <span>CRM Systems</span>
+                </div>
+                <!-- Web Research -->
+                <div class="tool-card">
+                    <svg viewBox="0 0 48 48" role="img" aria-label="Web Research logo"><g fill="none" stroke="#06b6d4" stroke-width="5" stroke-linecap="round"><circle cx="21" cy="21" r="11"/><path d="M30 30l11 11"/></g></svg>
+                    <span>Web Research</span>
+                </div>
+
+                <!-- Convoso Dialer -->
+                <div class="tool-card">
+                    <svg viewBox="0 0 48 48" role="img" aria-label="Convoso logo">
+                        <rect width="48" height="48" rx="11" fill="#7C3AED"/>
+                        <path d="M31 17.5a9.5 9.5 0 1 0 0 13" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"/>
+                        <circle cx="35" cy="24" r="2.6" fill="#fff"/>
+                    </svg>
+                    <span>Convoso Dialer</span>
+                </div>
+                <!-- Enzo Dialer -->
+                <div class="tool-card">
+                    <svg viewBox="0 0 48 48" role="img" aria-label="Enzo Dialer logo">
+                        <rect width="48" height="48" rx="11" fill="#0EA5E9"/>
+                        <path d="M32 14H17v20h15M17 24h12" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span>Enzo Dialer</span>
+                </div>
+                <!-- Podio -->
+                <div class="tool-card">
+                    <svg viewBox="0 0 48 48" role="img" aria-label="Podio logo">
+                        <rect width="48" height="48" rx="11" fill="#1B8FD6"/>
+                        <circle cx="24" cy="24" r="12" fill="none" stroke="#fff" stroke-width="5"/>
+                        <circle cx="24" cy="24" r="3.5" fill="#fff"/>
+                    </svg>
+                    <span>Podio Forms</span>
+                </div>
+                <!-- Slack -->
+                <div class="tool-card">
+                    <svg viewBox="0 0 48 48" role="img" aria-label="Slack logo">
+                        <g>
+                            <g fill="#36C5F0"><rect x="26" y="3" width="8" height="19" rx="4"/><circle cx="18" cy="8" r="4.5"/></g>
+                            <g fill="#2EB67D" transform="rotate(90 24 24)"><rect x="26" y="3" width="8" height="19" rx="4"/><circle cx="18" cy="8" r="4.5"/></g>
+                            <g fill="#ECB22E" transform="rotate(180 24 24)"><rect x="26" y="3" width="8" height="19" rx="4"/><circle cx="18" cy="8" r="4.5"/></g>
+                            <g fill="#E01E5A" transform="rotate(270 24 24)"><rect x="26" y="3" width="8" height="19" rx="4"/><circle cx="18" cy="8" r="4.5"/></g>
+                        </g>
+                    </svg>
+                    <span>Slack</span>
+                </div>
+                <!-- Microsoft Teams -->
+                <div class="tool-card">
+                    <svg viewBox="0 0 48 48" role="img" aria-label="Microsoft Teams logo">
+                        <rect width="48" height="48" rx="11" fill="#5059C9"/>
+                        <circle cx="35" cy="13" r="5" fill="#7B83EB"/>
+                        <rect x="11" y="15" width="24" height="7" rx="2" fill="#fff"/>
+                        <rect x="19.5" y="15" width="7" height="21" rx="2" fill="#fff"/>
+                    </svg>
+                    <span>Microsoft Teams</span>
+                </div>
+                <!-- Zoom -->
+                <div class="tool-card">
+                    <svg viewBox="0 0 48 48" role="img" aria-label="Zoom logo">
+                        <rect width="48" height="48" rx="11" fill="#2D8CFF"/>
+                        <rect x="9" y="16" width="20" height="16" rx="4" fill="#fff"/>
+                        <path d="M32 22l8-5.5v15L32 26z" fill="#fff"/>
+                    </svg>
+                    <span>Zoom</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Work Experience Section -->
+        <section id="experience">
+            <h2 class="section-title">Work Experience</h2>
+            <p class="section-subtitle">A timeline of my professional roles in technical support and lead generation.</p>
+
+            <div class="timeline">
+                <!-- Concentrix -->
+                <div class="glass-card">
+                    <div class="timeline-header">
+                        <div>
+                            <div class="job-title">Customer Advisor I</div>
+                            <div class="company-name">Concentrix</div>
+                        </div>
+                        <span class="job-date">2022 – 2025</span>
+                    </div>
+                    <div class="timeline-body">
+                        <ul>
+                            <li>Entered, updated, and maintained customer and service data in CRM systems with 100% accuracy.</li>
+                            <li>Processed work orders for service changes and upgrades, verifying info and records.</li>
+                            <li>Scheduled and rescheduled technician appointments based on resource availability.</li>
+                            <li>Researched and resolved technical issues through root cause analysis using internal knowledge bases.</li>
+                            <li>Documented customer interactions, technical notes, and follow-ups in CRM systems.</li>
+                            <li>Generated reports and tracked key metrics to support team performance and service quality.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Evergreen Real Estate -->
+                <div class="glass-card">
+                    <div class="timeline-header">
+                        <div>
+                            <div class="job-title">Cold Caller</div>
+                            <div class="company-name">Evergreen Real Estate</div>
+                        </div>
+                        <span class="job-date">Feb 2026 – June 2026</span>
+                    </div>
+                    <div class="timeline-body">
+                        <ul>
+                            <li>Conducted high-volume outbound calls to generate and qualify real estate leads.</li>
+                            <li>Researched property owner information using online tools and databases.</li>
+                            <li>Updated CRM records with accurate lead information and call outcomes.</li>
+                            <li>Scheduled appointments for motivated sellers and prospective buyers.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Core Skills Section -->
+        <section id="skills">
+            <h2 class="section-title">Core Skills</h2>
+            <p class="section-subtitle">Key technical and administrative competencies.</p>
+
+            <div class="skills-container">
+                <div class="skill-tag"><i class="fa-solid fa-check"></i> Technical Support</div>
+                <div class="skill-tag"><i class="fa-solid fa-check"></i> CRM Management</div>
+                <div class="skill-tag"><i class="fa-solid fa-check"></i> Data Entry & Accuracy</div>
+                <div class="skill-tag"><i class="fa-solid fa-check"></i> Administrative Support</div>
+                <div class="skill-tag"><i class="fa-solid fa-check"></i> Calendar & Email Management</div>
+                <div class="skill-tag"><i class="fa-solid fa-check"></i> Online & Web Research</div>
+                <div class="skill-tag"><i class="fa-solid fa-check"></i> Data Verification</div>
+                <div class="skill-tag"><i class="fa-solid fa-check"></i> Time Management</div>
+                <div class="skill-tag"><i class="fa-solid fa-check"></i> Root Cause Analysis</div>
+            </div>
+        </section>
+
+        <!-- Education Section -->
+        <section id="education">
+            <h2 class="section-title">Education</h2>
+            <p class="section-subtitle">Academic background and qualifications.</p>
+
+            <div class="glass-card">
+                <div class="timeline-header">
+                    <div>
+                        <div class="job-title">Bachelor of Physical Education</div>
+                        <div class="company-name">Central Philippines State University</div>
+                    </div>
+                    <span class="job-date">2018 – 2022</span>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer id="contact">
+        <p>© 2026 Federico Bocol III. Portfolio tailored for GitHub Pages.</p>
+    </footer>
+
+    <!-- Interactive Canvas & Particle Trail Script -->
+    <script>
+        const canvas = document.getElementById('glitter-canvas');
+        const ctx = canvas.getContext('2d');
+
+        let particles = [];
+        let mouseTrail = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        // Particle Constructor for Floating Ambient Glitter
+        class GlitterParticle {
+            constructor() {
+                this.reset();
+            }
+
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 0.5;
+                this.speedX = (Math.random() - 0.5) * 0.4;
+                this.speedY = (Math.random() - 0.5) * 0.4;
+                this.opacity = Math.random() * 0.8 + 0.2;
+                this.color = Math.random() > 0.5 ? '#6366f1' : '#06b6d4';
+                this.twinkleSpeed = Math.random() * 0.02 + 0.005;
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                // Twinkle effect
+                this.opacity += Math.sin(Date.now() * this.twinkleSpeed) * 0.01;
+
+                if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) {
+                    this.reset();
+                }
+            }
+
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = Math.max(0.1, Math.min(1, this.opacity));
+                ctx.fillStyle = this.color;
+                ctx.shadowBlur = 8;
+                ctx.shadowColor = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        // Particle Constructor for Mouse Sparkles
+        class MouseSparkle {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.size = Math.random() * 3 + 1;
+                this.speedX = (Math.random() - 0.5) * 2;
+                this.speedY = (Math.random() - 0.5) * 2;
+                this.life = 1; // Fade out ratio
+                this.decay = Math.random() * 0.03 + 0.02;
+                this.color = Math.random() > 0.3 ? '#a5f3fc' : '#c7d2fe';
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                this.life -= this.decay;
+            }
+
+            draw() {
+                if (this.life <= 0) return;
+                ctx.save();
+                ctx.globalAlpha = this.life;
+                ctx.fillStyle = this.color;
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        // Populate Ambient Glitter Particles
+        for (let i = 0; i < 70; i++) {
+            particles.push(new GlitterParticle());
+        }
+
+        // Mouse Movement Listener for Interactive Sparkle Trail
+        window.addEventListener('mousemove', (e) => {
+            for (let i = 0; i < 2; i++) {
+                mouseTrail.push(new MouseSparkle(e.clientX, e.clientY));
+            }
+        });
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw ambient glitter
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+
+            // Draw mouse trail sparkles
+            for (let i = mouseTrail.length - 1; i >= 0; i--) {
+                const sparkle = mouseTrail[i];
+                sparkle.update();
+                sparkle.draw();
+                if (sparkle.life <= 0) {
+                    mouseTrail.splice(i, 1);
+                }
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+    </script>
+
+</body>
+</html>
